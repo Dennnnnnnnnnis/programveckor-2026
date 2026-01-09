@@ -9,8 +9,13 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 4f;
     [SerializeField] private float jumpHeight = 4f;
-    [Space] [SerializeField] private float gravity = 1f;
+    [Space]
+    [SerializeField] private float gravity = 60f;
+    [SerializeField] private float jumpGravity = 50f;
+    [SerializeField] private float peakGravity = 30f;
+    [SerializeField] private float terminalVelocity = 80f;
 
+    private bool isJumping = false;
     private float coyoteTime = 0f;
 
     [Header("Input")]
@@ -40,7 +45,26 @@ public class PlayerController : MonoBehaviour
             col.Velocity = Vector2.right * moveInput.x * walkSpeed + Vector2.up * col.Velocity.y;
 
             // Vertical movement
-            col.Velocity += Vector2.down * gravity * Time.fixedDeltaTime;
+            if (isJumping)
+            {
+                if (col.Velocity.y < 0f)
+                    isJumping = false;
+                else if(!jumpInput)
+                {
+                    isJumping = false;
+                    col.Velocity = col.Velocity.x * Vector2.right + col.Velocity.y / 2f * Vector2.up;
+                }
+            }
+
+            float grv = gravity;
+            if(isJumping)
+            {
+                if (col.Velocity.y < 2f)
+                    grv = peakGravity;
+                else
+                    grv = jumpGravity;
+            }
+            col.Velocity = Vector2.right * col.Velocity.x + Vector2.up * Mathf.Max(col.Velocity.y - grv * Time.fixedDeltaTime, -terminalVelocity);
 
             if (col.IsGrounded)
                 coyoteTime = 0.1f;
@@ -52,6 +76,7 @@ public class PlayerController : MonoBehaviour
                 jumpInputBuffer = 0f;
                 coyoteTime = 0f;
                 col.IsGrounded = false;
+                isJumping = true;
             }
 
             // Buffers
