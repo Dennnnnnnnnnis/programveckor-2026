@@ -12,8 +12,6 @@ public class GameManager : MonoBehaviour
 
     public GameState state = GameState.STANDARD;
 
-    [HideInInspector] public Inputs input;
-
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
@@ -25,9 +23,6 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
         }
-
-        input = new Inputs();
-        input.Enable();
     }
 
     // Update is called once per frame

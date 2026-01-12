@@ -1,4 +1,9 @@
 using UnityEngine;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.Users;
+using UnityEngine.InputSystem.Utilities;
+using UnityEngine.InputSystem.OnScreen;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Collision))]
 public class PlayerController : MonoBehaviour
@@ -19,6 +24,7 @@ public class PlayerController : MonoBehaviour
     private float coyoteTime = 0f;
 
     [Header("Input")]
+    private PlayerInput input;
     private Vector2 moveInput;
 
     private bool jumpInput = false, jumpInputDown = false;
@@ -30,6 +36,7 @@ public class PlayerController : MonoBehaviour
     {
         gm = GameManager.Instance;
         col = GetComponent<Collision>();
+        input = GetComponent<PlayerInput>();
     }
 
     void Update()
@@ -98,10 +105,10 @@ public class PlayerController : MonoBehaviour
 
     void UpdateInput()
     {
-        moveInput = gm.input.Player.Move.ReadValue<Vector2>();
+        moveInput = input.actions["Move"].ReadValue<Vector2>();
 
-        jumpInput = gm.input.Player.Jump.IsPressed();
-        if (gm.input.Player.Jump.triggered)
+        jumpInput = input.actions["Jump"].IsPressed();
+        if (input.actions["Jump"].triggered)
             jumpInputBuffer = 0.1f;
     }
 }
