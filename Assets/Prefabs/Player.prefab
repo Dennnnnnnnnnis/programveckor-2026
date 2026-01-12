@@ -66,12 +66,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6177004199bfa1b4ea8610dce47da0ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  isDog: 0
+  state: 0
   walkSpeed: 6
   jumpHeight: 4
   gravity: 75
   jumpGravity: 65
   peakGravity: 40
   terminalVelocity: 80
+  dogDashForce: 20
+  dogDashLocktime: 0.15
+  dogDashCooldown: 0.3
 --- !u!114 &4277954736954324332
 MonoBehaviour:
   m_ObjectHideFlags: 0
