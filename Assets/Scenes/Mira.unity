@@ -205,7 +205,7 @@ Transform:
   m_GameObject: {fileID: 186497119}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.4, y: -4.53, z: 0}
+  m_LocalPosition: {x: 8.4, y: -2.54, z: 0}
   m_LocalScale: {x: 78.3, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -482,6 +482,7 @@ GameObject:
   - component: {fileID: 374027381}
   - component: {fileID: 374027380}
   - component: {fileID: 374027383}
+  - component: {fileID: 374027384}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -576,6 +577,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CameraFollow
   player: {fileID: 1941988630}
+--- !u!114 &374027384
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 374027379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cff473dcc430fbb4a97ef81166228754, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ScreenShake
+  intensity: 0.5
+  speed: 1
 --- !u!1 &472550264
 GameObject:
   m_ObjectHideFlags: 0
@@ -952,7 +967,7 @@ Transform:
   m_GameObject: {fileID: 942988750}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.06, y: -3.43, z: 0}
+  m_LocalPosition: {x: 18.06, y: -1.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -983,7 +998,7 @@ Transform:
   m_GameObject: {fileID: 1166363308}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 8.42, y: -3.43, z: 0}
+  m_LocalPosition: {x: 8.42, y: -1.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1288,7 +1303,7 @@ Transform:
   m_GameObject: {fileID: 1538722014}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.29, y: -3.43, z: 0}
+  m_LocalPosition: {x: 13.29, y: -1.44, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1552,12 +1567,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6177004199bfa1b4ea8610dce47da0ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  isDog: 0
+  state: 0
   walkSpeed: 6
   jumpHeight: 4
   gravity: 75
   jumpGravity: 65
   peakGravity: 40
   terminalVelocity: 80
+  dogDashForce: 10
+  dogDashLocktime: 0.2
+  dogDashCooldown: 0.5
 --- !u!114 &1941988632
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1645,7 +1665,7 @@ Transform:
   m_GameObject: {fileID: 1941988630}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.58838, y: -0.86182, z: 0}
+  m_LocalPosition: {x: -0.58838, y: 1.1281803, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
