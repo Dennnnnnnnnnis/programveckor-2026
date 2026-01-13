@@ -13,14 +13,21 @@ public class PlayerController : MonoBehaviour
         NORMAL,
         DASH,
         SWING,
-        NOCLIP
+        NOCLIP,
+        BRAINDEAD
     };
 
     GameManager gm;
     Collision col;
+
     public bool isDog = false;
-    [HideInInspector] public PlayerState state = PlayerState.NORMAL;
+    public PlayerState state = PlayerState.BRAINDEAD;
     private bool facingRight = true;
+
+    // Tether
+    TetherManager tether;
+    private int tetherIndex = -1;
+    private float tetherDrag = 0f;
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 4f;
@@ -50,24 +57,33 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
+        state = PlayerState.BRAINDEAD;
+
         gm = GameManager.Instance;
         col = GetComponent<Collision>();
         input = GetComponent<PlayerInput>();
 
-        // Make sure the player is either the dog or the guy
-        PlayerController[] allPlayers = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
-        if (allPlayers.Length >= 2)
+        // Manage tether connection
+        tether = Object.FindFirstObjectByType<TetherManager>();
+        if(tether != null)
         {
-            foreach (PlayerController p in allPlayers)
+            // Do player two stuff
+            if(tether.connections.Count > 0)
             {
-                if (p != this)
+                for(int i = 0; i < tether.connections.Count; i++)
                 {
-                    isDog = !p.isDog;
-                    print("yeah this should work");
+                    PlayerController otherPlayer;
+                    if (tether.connections[i].TryGetComponent<PlayerController>(out otherPlayer))
+                    {
+                        isDog = !otherPlayer.isDog;
+                        break;
+                    }
                 }
-                print("got into loop");
             }
-            print("got into player check");
+
+            // Connect to the tether
+            tether.connections.Add(gameObject);
+            tetherIndex = tether.connections.Count - 1;
         }
     }
 
@@ -80,19 +96,30 @@ public class PlayerController : MonoBehaviour
     {
         if (gm.state == GameManager.GameState.STANDARD)
         {
-            switch (state)
-            {
-                case PlayerState.NORMAL:
-                    PlayerStateNormal();
-                    break;
-                case PlayerState.DASH:
-                    PlayerStateDash();
-                    break;
-                case PlayerState.NOCLIP:
-                    col.Velocity = moveInput * walkSpeed;
-                    transform.position += (Vector3)col.Velocity;
-                    break;
-            }
+            // Tether drag
+            if (!tether.IsWithinBounds(tetherIndex))
+                tetherDrag = 0.99f;
+            else if (tetherDrag > 0f)
+                tetherDrag = Mathf.Max(tetherDrag - Time.fixedDeltaTime, 0f);
+
+                // States
+                switch (state)
+                {
+                    case PlayerState.NORMAL:
+                        PlayerStateNormal();
+                        break;
+                    case PlayerState.DASH:
+                        PlayerStateDash();
+                        break;
+                    case PlayerState.BRAINDEAD:
+                        col.Velocity = Vector2.right * col.Velocity.x * tetherDrag + Vector2.up * Mathf.Max(col.Velocity.y - gravity * Time.fixedDeltaTime, -terminalVelocity);
+                        col.Collide();
+                        break;
+                    case PlayerState.NOCLIP:
+                        col.Velocity = moveInput * walkSpeed;
+                        transform.position += (Vector3)col.Velocity * Time.fixedDeltaTime;
+                        break;
+                }
 
             // Cooldowns
             if(abilityTimer > 0f)
