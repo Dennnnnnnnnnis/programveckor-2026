@@ -1,9 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem.LowLevel;
-using UnityEngine.InputSystem.Users;
-using UnityEngine.InputSystem.Utilities;
-using UnityEngine.InputSystem.OnScreen;
 using UnityEngine.InputSystem;
+using UnityEditor.Animations;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Collision))]
 public class PlayerController : MonoBehaviour
@@ -19,15 +19,20 @@ public class PlayerController : MonoBehaviour
 
     GameManager gm;
     Collision col;
+    Animator anim;
 
     public bool isDog = false;
-    public PlayerState state = PlayerState.BRAINDEAD;
+    public PlayerState state = PlayerState.NORMAL;
     private bool facingRight = true;
+
+    // Shitty temp stuff
+    [SerializeField] private AnimatorController dogAnims;
 
     // Tether
     TetherManager tether;
     private int tetherIndex = -1;
     private float tetherDrag = 0f;
+    private float airborneTimer = 0f;
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 4f;
@@ -57,11 +62,16 @@ public class PlayerController : MonoBehaviour
 
     void Awake()
     {
-        state = PlayerState.BRAINDEAD;
-
+        // Some important components to grab
         gm = GameManager.Instance;
         col = GetComponent<Collision>();
         input = GetComponent<PlayerInput>();
+
+        // Try to get the animator
+        if (transform.childCount > 0 && transform.GetChild(0).TryGetComponent<Animator>(out anim))
+            Debug.Log("Got Animator for player.");
+        else
+            Debug.LogWarning("Couldn't find Animator for player.");
 
         // Manage tether connection
         tether = Object.FindFirstObjectByType<TetherManager>();
@@ -76,6 +86,8 @@ public class PlayerController : MonoBehaviour
                     if (tether.connections[i].TryGetComponent<PlayerController>(out otherPlayer))
                     {
                         isDog = !otherPlayer.isDog;
+                        if (isDog)
+                            anim.runtimeAnimatorController = dogAnims;
                         break;
                     }
                 }
@@ -85,6 +97,9 @@ public class PlayerController : MonoBehaviour
             tether.connections.Add(gameObject);
             tetherIndex = tether.connections.Count - 1;
         }
+
+        // Add player to camera list
+        Object.FindAnyObjectByType<CameraManager>().targets.Add(transform);
     }
 
     void Update()
@@ -97,29 +112,31 @@ public class PlayerController : MonoBehaviour
         if (gm.state == GameManager.GameState.STANDARD)
         {
             // Tether drag
+            col.weight = 1f;
             if (!tether.IsWithinBounds(tetherIndex))
                 tetherDrag = 0.99f;
             else if (tetherDrag > 0f)
                 tetherDrag = Mathf.Max(tetherDrag - Time.fixedDeltaTime, 0f);
 
-                // States
-                switch (state)
-                {
-                    case PlayerState.NORMAL:
-                        PlayerStateNormal();
-                        break;
-                    case PlayerState.DASH:
-                        PlayerStateDash();
-                        break;
-                    case PlayerState.BRAINDEAD:
-                        col.Velocity = Vector2.right * col.Velocity.x * tetherDrag + Vector2.up * Mathf.Max(col.Velocity.y - gravity * Time.fixedDeltaTime, -terminalVelocity);
-                        col.Collide();
-                        break;
-                    case PlayerState.NOCLIP:
-                        col.Velocity = moveInput * walkSpeed;
-                        transform.position += (Vector3)col.Velocity * Time.fixedDeltaTime;
-                        break;
-                }
+            // States
+            switch (state)
+            {
+                case PlayerState.NORMAL:
+                    PlayerStateNormal();
+                    break;
+                case PlayerState.DASH:
+                    PlayerStateDash();
+                    break;
+                case PlayerState.BRAINDEAD:
+                    col.Velocity = Vector2.right * col.Velocity.x * tetherDrag + Vector2.up * Mathf.Max(col.Velocity.y - gravity * Time.fixedDeltaTime, -terminalVelocity);
+                    col.Collide();
+                    break;
+                case PlayerState.NOCLIP:
+                    col.Velocity = moveInput * walkSpeed;
+                    transform.position += (Vector3)col.Velocity * Time.fixedDeltaTime;
+                    col.weight = 50f;
+                    break;
+            }
 
             // Cooldowns
             if(abilityTimer > 0f)
@@ -142,7 +159,7 @@ public class PlayerController : MonoBehaviour
     void PlayerStateNormal()
     {
         // Horizontal movement
-        col.Velocity = Vector2.right * moveInput.x * walkSpeed + Vector2.up * col.Velocity.y;
+        col.Velocity = Vector2.right * (moveInput.x * walkSpeed * (1f - tetherDrag) + col.Velocity.x * tetherDrag) + Vector2.up * col.Velocity.y;
         if (col.Velocity.x != 0f)
             facingRight = (col.Velocity.x > 0f);
 
@@ -193,6 +210,31 @@ public class PlayerController : MonoBehaviour
 
         // Do collision
         col.Collide();
+
+        // Weight
+        if (Mathf.Abs(moveInput.x) > 0.05f)
+            col.weight = 8f;
+        if (!col.IsGrounded)
+        {
+            col.weight = Mathf.Max(col.weight + Mathf.Max(col.Velocity.y / 2f, 0f) - airborneTimer * 0.8f, 0.01f);
+            airborneTimer += Time.fixedDeltaTime;
+        }
+        else
+            airborneTimer = 0f;
+
+        // Animations
+        if (!col.IsGrounded)
+        {
+            anim.Play("Jump", -1);
+        }
+        else
+        {
+            if (Mathf.Abs(moveInput.x) > 0.1f)
+                anim.Play("Walk", -1);
+            else
+                anim.Play("Idle", -1);
+        }
+        anim.transform.localScale = new Vector3((facingRight ? 1f : -1f), 1f, 1f);
     }
 
     void PlayerStateDash()
@@ -205,6 +247,9 @@ public class PlayerController : MonoBehaviour
 
         // Do collision
         col.Collide();
+
+        // Weight
+        col.weight = 30f;
 
         // Switch back to normal state
         if (abilityTimer <= dogDashCooldown - dogDashLocktime)
@@ -238,6 +283,11 @@ public class PlayerController : MonoBehaviour
                 state = PlayerState.NORMAL;
             else
                 state = PlayerState.NOCLIP;
+        }
+
+        if (input.actions["Pause"].triggered)
+        {
+            SceneManager.LoadScene(1);
         }
     }
 }

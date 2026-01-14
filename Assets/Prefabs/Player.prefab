@@ -50,10 +50,11 @@ MonoBehaviour:
   whatIsCollision:
     serializedVersion: 2
     m_Bits: 8
-  collisionSize: {x: 1, y: 1}
-  collisionOffset: {x: 0, y: 0}
+  weight: 1
+  collisionSize: {x: 0.8, y: 2.5}
+  collisionOffset: {x: 0, y: 1.25}
   collisionPrec: {x: 3, y: 3}
-  collisionEdges: {x: 0.2, y: 0.2}
+  collisionEdges: {x: 0.2, y: 0.4}
 --- !u!114 &4012781913192930857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -68,6 +69,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
   isDog: 0
   state: 0
+  dogAnims: {fileID: 9100000, guid: e51e561d5e7b475408432caf92295f48, type: 2}
   walkSpeed: 6
   jumpHeight: 4
   gravity: 75
@@ -117,6 +119,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8175039578572107705}
   - component: {fileID: 1388007345999484153}
+  - component: {fileID: 210327740933166784}
   m_Layer: 0
   m_Name: Square
   m_TagString: Untagged
@@ -188,7 +191,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
+  m_Sprite: {fileID: -7539912632482298588, guid: 38c84993be7326f44ae5a26b4e3425b4, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -198,3 +201,25 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!95 &210327740933166784
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6396902024355322392}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3c8e891c186c04f4fb34b9bfb90c9300, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

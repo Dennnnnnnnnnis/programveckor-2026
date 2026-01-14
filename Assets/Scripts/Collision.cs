@@ -4,6 +4,7 @@ public class Collision : MonoBehaviour
 {
     [SerializeField] private LayerMask whatIsCollision;
     private float bounceFactor = 0f;
+    public float weight = 1f;
 
     [Header("Checks")]
     [SerializeField] private Vector2 collisionSize = new Vector2(1f, 1f);

@@ -36,14 +36,32 @@ public class TetherManager : MonoBehaviour
             {
                 float pullbackForce = Mathf.Pow((Vector3.Magnitude(con1.transform.position - con2.transform.position) - tetherLength), forcePoweredBy) * forceMultiplier;
                 float weightDistribution = 0.5f; // This is how much connection 1 is affected by the force in % (connection 2 is the remaining %)
-                if(con1.TryGetComponent<Collision>(out Collision col1))
+
+                // Get the things and see weight distribution
+                Collision col1, col2;
+                if (!con1.TryGetComponent<Collision>(out col1))
+                    weightDistribution = 0f;
+
+                if (con2.TryGetComponent<Collision>(out col2))
                 {
+                    if(col1 != null)
+                    {
+                        // If both have the collision component they can handle weight distribution
+                        float totalWeight = col1.weight + col2.weight;
+                        if(totalWeight > 0f)
+                            weightDistribution = col2.weight / totalWeight;
+                    }
+                }
+                else
+                    weightDistribution = 1f;
+
+                print(weightDistribution);
+
+                // Apply the forces and stuff
+                if (col1 != null)
                     col1.Velocity -= weightDistribution * pullbackForce * Vector2.Normalize(con1.transform.position - con2.transform.position);
-                }
-                if (con2.TryGetComponent<Collision>(out Collision col2))
-                {
+                if(col2 != null)
                     col2.Velocity += (1f - weightDistribution) * pullbackForce * Vector2.Normalize(con1.transform.position - con2.transform.position);
-                }
             }
         }
     }
@@ -63,6 +81,16 @@ public class TetherManager : MonoBehaviour
         // Find if the connection is part of the tether and within bounds (using a long return statement)
         if(ind >= 0 && ind < connections.Count)
             return (ind == 0 || Vector3.Magnitude(connections[ind - 1].transform.position - connections[ind].transform.position) <= tetherLength) && (ind == connections.Count - 1 || Vector3.Magnitude(connections[ind].transform.position - connections[ind + 1].transform.position) <= tetherLength);
+
+        // The object isn't part of the tether (default to returning true)
+        return true;
+    }
+
+    public bool IsWithinBoundsX(int ind)
+    {
+        // Find if the connection is part of the tether and within bounds (using a long return statement)
+        if (ind >= 0 && ind < connections.Count)
+            return (ind == 0 || Mathf.Abs(connections[ind - 1].transform.position.x - connections[ind].transform.position.x) <= tetherLength) && (ind == connections.Count - 1 || Mathf.Abs(connections[ind].transform.position.x - connections[ind + 1].transform.position.x) <= tetherLength);
 
         // The object isn't part of the tether (default to returning true)
         return true;
