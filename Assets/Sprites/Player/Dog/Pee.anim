@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Scared
+  m_Name: Pee
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,19 +21,13 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 4688385885995351642, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - time: 0.041666668
-      value: {fileID: 7370601746806641477, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - time: 0.083333336
-      value: {fileID: 3747922279611990821, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - time: 0.125
-      value: {fileID: 5624801889430394015, guid: a98721c2298820440b6965cb9af52b94, type: 3}
+      value: {fileID: 21300000, guid: 448408df0de58fc4392a9a76bd35d9ec, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
-  m_SampleRate: 24
+  m_SampleRate: 12
   m_WrapMode: 0
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
@@ -50,16 +44,13 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 4688385885995351642, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - {fileID: 7370601746806641477, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - {fileID: 3747922279611990821, guid: a98721c2298820440b6965cb9af52b94, type: 3}
-    - {fileID: 5624801889430394015, guid: a98721c2298820440b6965cb9af52b94, type: 3}
+    - {fileID: 21300000, guid: 448408df0de58fc4392a9a76bd35d9ec, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.16666667
+    m_StopTime: 0.083333336
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -70,7 +61,7 @@ AnimationClip:
     m_LoopBlendPositionY: 0
     m_LoopBlendPositionXZ: 0
     m_KeepOriginalOrientation: 0
-    m_KeepOriginalPositionY: 0
+    m_KeepOriginalPositionY: 1
     m_KeepOriginalPositionXZ: 0
     m_HeightFromFeet: 0
     m_Mirror: 0

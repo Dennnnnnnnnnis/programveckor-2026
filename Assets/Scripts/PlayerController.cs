@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
         NORMAL,
         DASH,
         SWING,
+        PEE,
         NOCLIP,
         BRAINDEAD
     };
@@ -20,6 +21,7 @@ public class PlayerController : MonoBehaviour
     GameManager gm;
     Collision col;
     Animator anim;
+    ParticleSystem pee;
 
     public bool isDog = false;
     public PlayerState state = PlayerState.NORMAL;
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
 
     // Shitty temp stuff
     [SerializeField] private AnimatorController dogAnims;
+    [SerializeField] private float dogColHeight, dogColEdge;
 
     // Tether
     TetherManager tether;
@@ -57,8 +60,8 @@ public class PlayerController : MonoBehaviour
     private PlayerInput input;
     private Vector2 moveInput;
 
-    private bool jumpInput = false, actionInput = false;
-    private float jumpInputBuffer = 0f, actionInputBuffer = 0f;
+    private bool jumpInput = false, actionInput = false, action2Input = false, peeInput = false;
+    private float jumpInputBuffer = 0f, actionInputBuffer = 0f, action2InputBuffer = 0f;
 
     void Awake()
     {
@@ -72,6 +75,12 @@ public class PlayerController : MonoBehaviour
             Debug.Log("Got Animator for player.");
         else
             Debug.LogWarning("Couldn't find Animator for player.");
+
+        // Try to get the particle system
+        if (transform.childCount > 1 && transform.GetChild(1).TryGetComponent<ParticleSystem>(out pee))
+            Debug.Log("Got Particle System for player.");
+        else
+            Debug.LogWarning("Couldn't find Particle System for player.");
 
         // Manage tether connection
         tether = Object.FindFirstObjectByType<TetherManager>();
@@ -87,7 +96,10 @@ public class PlayerController : MonoBehaviour
                     {
                         isDog = !otherPlayer.isDog;
                         if (isDog)
+                        {
                             anim.runtimeAnimatorController = dogAnims;
+                            col.ChangeHitboxY(dogColHeight, dogColHeight / 2f, dogColEdge);
+                        }
                         break;
                     }
                 }
@@ -127,6 +139,9 @@ public class PlayerController : MonoBehaviour
                 case PlayerState.DASH:
                     PlayerStateDash();
                     break;
+                case PlayerState.PEE:
+                    PlayerStatePee();
+                    break;
                 case PlayerState.BRAINDEAD:
                     col.Velocity = Vector2.right * col.Velocity.x * tetherDrag + Vector2.up * Mathf.Max(col.Velocity.y - gravity * Time.fixedDeltaTime, -terminalVelocity);
                     col.Collide();
@@ -138,8 +153,14 @@ public class PlayerController : MonoBehaviour
                     break;
             }
 
+            // Pee thing
+            if (state == PlayerState.PEE)
+                pee.Play();
+            else
+                pee.Stop();
+
             // Cooldowns
-            if(abilityTimer > 0f)
+            if (abilityTimer > 0f)
                 abilityTimer -= Time.fixedDeltaTime;
 
             // Buffers
@@ -225,7 +246,10 @@ public class PlayerController : MonoBehaviour
         // Animations
         if (!col.IsGrounded)
         {
-            anim.Play("Jump", -1);
+            if (airborneTimer > 3f)
+                anim.Play("Scared", -1);
+            else
+                anim.Play("Jump", -1);
         }
         else
         {
@@ -235,10 +259,16 @@ public class PlayerController : MonoBehaviour
                 anim.Play("Idle", -1);
         }
         anim.transform.localScale = new Vector3((facingRight ? 1f : -1f), 1f, 1f);
+
+        // Pee
+        if (peeInput && col.IsGrounded)
+            state = PlayerState.PEE;
     }
 
     void PlayerStateDash()
     {
+        // Very necessary commenting here
+
         // Gravity
         col.Velocity = Vector2.right * col.Velocity.x + Vector2.up * Mathf.Max(col.Velocity.y - jumpGravity * Time.fixedDeltaTime, -terminalVelocity);
 
@@ -251,8 +281,70 @@ public class PlayerController : MonoBehaviour
         // Weight
         col.weight = 30f;
 
+        // Animation
+        anim.Play("Dash", -1);
+
         // Switch back to normal state
         if (abilityTimer <= dogDashCooldown - dogDashLocktime)
+            state = PlayerState.NORMAL;
+    }
+
+    void PlayerStatePee()
+    {
+        // Horizontal movement
+        col.Velocity = Vector2.right * col.Velocity.x * tetherDrag + Vector2.up * col.Velocity.y;
+
+        #region Vertical Movement
+
+        // Cancel jumping
+        if (isJumping)
+        {
+            if (col.Velocity.y < 0f)
+                isJumping = false;
+            else if (!jumpInput)
+            {
+                isJumping = false;
+                col.Velocity = col.Velocity.x * Vector2.right + col.Velocity.y / 2f * Vector2.up;
+            }
+        }
+
+        // Gravity
+        col.Velocity = Vector2.right * col.Velocity.x + Vector2.up * Mathf.Max(col.Velocity.y - gravity * Time.fixedDeltaTime, -terminalVelocity);
+        if (col.IsGrounded)
+            coyoteTime = 0.1f;
+
+        // Do the jump
+        if (jumpInputBuffer > 0f && coyoteTime > 0f)
+        {
+            col.Velocity = Vector2.up * Mathf.Sqrt(2f * gravity * jumpHeight) + Vector2.right * col.Velocity;
+
+            jumpInputBuffer = 0f;
+            coyoteTime = 0f;
+            col.IsGrounded = false;
+            isJumping = true;
+        }
+
+        #endregion
+
+        // Ablilities
+        if (isDog && actionInputBuffer > 0f && abilityTimer <= 0f)
+            DogDash();
+
+        // Do collision
+        col.Collide();
+
+        // Animations
+        anim.Play("Pee", -1);
+        anim.transform.localScale = new Vector3((facingRight ? 1f : -1f), 1f, 1f);
+
+        // Particle system
+        if (moveInput != Vector2.zero)
+        {
+            pee.transform.localRotation = Quaternion.Euler(Mathf.Atan2(-moveInput.y, moveInput.x) * Mathf.Rad2Deg, 90f, -90f);
+        }
+
+        // Change state
+        if (!peeInput || !col.IsGrounded)
             state = PlayerState.NORMAL;
     }
 
@@ -261,7 +353,7 @@ public class PlayerController : MonoBehaviour
         state = PlayerState.DASH;
         isJumping = false;
         abilityTimer = dogDashCooldown;
-        col.Velocity = Vector2.up * col.Velocity.y + Vector2.right * dogDashForce * (facingRight ? 1f : -1f);
+        col.Velocity = Vector2.up * col.Velocity.y + Vector2.right * dogDashForce * (Mathf.Abs(moveInput.x) > 0.1f ? Mathf.Sign(moveInput.x) : (facingRight ? 1f : -1f));
     }
 
     void UpdateInput()
@@ -275,6 +367,12 @@ public class PlayerController : MonoBehaviour
         actionInput = input.actions["Action"].IsPressed();
         if (input.actions["Action"].triggered)
             actionInputBuffer = 0.1f;
+
+        action2Input = input.actions["Action2"].IsPressed();
+        if (input.actions["Action2"].triggered)
+            action2InputBuffer = 0.1f;
+
+        peeInput = input.actions["Pee"].IsPressed();
 
         // This is for debug stuff
         if (input.actions["Debug"].triggered)
