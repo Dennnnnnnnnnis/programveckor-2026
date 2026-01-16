@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEditor.Animations;
 using UnityEngine.SceneManagement;
 using Unity.VectorGraphics;
 
@@ -30,7 +29,7 @@ public class PlayerController : MonoBehaviour
     private bool facingRight = true;
 
     // Shitty temp stuff
-    [SerializeField] private AnimatorController dogAnims;
+    [SerializeField] private RuntimeAnimatorController dogAnims;
     [SerializeField] private float dogColHeight, dogColEdge;
     [SerializeField] private float dogPeeOffset = 0.5f;
     private Animator dogMouth;

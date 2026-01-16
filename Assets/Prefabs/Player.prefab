@@ -77,7 +77,7 @@ MonoBehaviour:
   dogColHeight: 1.25
   dogColEdge: 0.2
   dogPeeOffset: 1
-  walkSpeed: 7.5
+  walkSpeed: 8
   jumpHeight: 4
   gravity: 75
   jumpGravity: 65
