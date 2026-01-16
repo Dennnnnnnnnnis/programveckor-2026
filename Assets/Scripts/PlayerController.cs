@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
     Collision col;
     Animator anim;
     ParticleSystem pee;
+    SpriteRenderer playerIndicator;
 
     public bool isDog = false;
     public PlayerState state = PlayerState.NORMAL;
@@ -30,6 +31,9 @@ public class PlayerController : MonoBehaviour
     // Shitty temp stuff
     [SerializeField] private AnimatorController dogAnims;
     [SerializeField] private float dogColHeight, dogColEdge;
+    private Animator dogMouth;
+    private float idleTime = 0f;
+    private float indicatorTime = 3f;
 
     // Tether
     TetherManager tether;
@@ -76,11 +80,27 @@ public class PlayerController : MonoBehaviour
         else
             Debug.LogWarning("Couldn't find Animator for player.");
 
+        // Try to get the dog mouth
+        if (anim.transform.childCount > 0 && anim.transform.GetChild(0).TryGetComponent<Animator>(out dogMouth))
+            Debug.Log("Got dog mouth for player.");
+        else
+            Debug.LogWarning("Couldn't find dog mouth for player.");
+
         // Try to get the particle system
         if (transform.childCount > 1 && transform.GetChild(1).TryGetComponent<ParticleSystem>(out pee))
             Debug.Log("Got Particle System for player.");
         else
             Debug.LogWarning("Couldn't find Particle System for player.");
+
+        // Try to get the player indicator
+        Animator playerIndicatorAnim = null;
+        if (transform.childCount > 2 && transform.GetChild(2).TryGetComponent<Animator>(out playerIndicatorAnim))
+        {
+            playerIndicator = playerIndicatorAnim.GetComponent<SpriteRenderer>();
+            Debug.Log("Got the player indicator.");
+        }
+        else
+            Debug.LogWarning("Couldn't find the player indicator.");
 
         // Manage tether connection
         tether = Object.FindFirstObjectByType<TetherManager>();
@@ -99,6 +119,8 @@ public class PlayerController : MonoBehaviour
                         {
                             anim.runtimeAnimatorController = dogAnims;
                             col.ChangeHitboxY(dogColHeight, dogColHeight / 2f, dogColEdge);
+                            if(playerIndicatorAnim != null)
+                                playerIndicatorAnim.SetBool("isP2", true);
                         }
                         break;
                     }
@@ -117,6 +139,18 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         UpdateInput();
+
+        if (indicatorTime > 0f)
+        {
+            indicatorTime -= Time.deltaTime;
+            if(playerIndicator.color.a < 1f)
+                playerIndicator.color = new Color(1f, 1f, 1f, Mathf.Lerp(playerIndicator.color.a, 1f, Time.deltaTime * 8f));
+        }
+        else if (playerIndicator.color.a > 0f)
+            playerIndicator.color = new Color(1f, 1f, 1f, Mathf.Lerp(playerIndicator.color.a, 0f, Time.deltaTime * 8f));
+
+        if (idleTime > 12f)
+            indicatorTime = 1f;
     }
 
     void FixedUpdate()
@@ -158,6 +192,18 @@ public class PlayerController : MonoBehaviour
                 pee.Play();
             else
                 pee.Stop();
+
+            // Bite thing
+            if (isDog && action2Input)
+                dogMouth.Play("DogMouth", -1);
+            else
+                dogMouth.Play("DogNo", -1);
+
+            // Idle timer
+            if (state == PlayerState.NORMAL && Mathf.Abs(moveInput.x) < 0.1f)
+                idleTime += Time.fixedDeltaTime;
+            else
+                idleTime = 0f;
 
             // Cooldowns
             if (abilityTimer > 0f)
@@ -385,7 +431,7 @@ public class PlayerController : MonoBehaviour
 
         if (input.actions["Pause"].triggered)
         {
-            SceneManager.LoadScene(1);
+            gm.TogglePause();
         }
     }
 }
