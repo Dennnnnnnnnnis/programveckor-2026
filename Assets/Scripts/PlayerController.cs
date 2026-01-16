@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEditor.Animations;
 using UnityEngine.SceneManagement;
+using Unity.VectorGraphics;
 
 [RequireComponent(typeof(Collision))]
 public class PlayerController : MonoBehaviour
@@ -31,6 +32,7 @@ public class PlayerController : MonoBehaviour
     // Shitty temp stuff
     [SerializeField] private AnimatorController dogAnims;
     [SerializeField] private float dogColHeight, dogColEdge;
+    [SerializeField] private float dogPeeOffset = 0.5f;
     private Animator dogMouth;
     private float idleTime = 0f;
     private float indicatorTime = 3f;
@@ -73,6 +75,8 @@ public class PlayerController : MonoBehaviour
         gm = GameManager.Instance;
         col = GetComponent<Collision>();
         input = GetComponent<PlayerInput>();
+
+        DontDestroyOnLoad(gameObject);
 
         // Try to get the animator
         if (transform.childCount > 0 && transform.GetChild(0).TryGetComponent<Animator>(out anim))
@@ -121,6 +125,7 @@ public class PlayerController : MonoBehaviour
                             col.ChangeHitboxY(dogColHeight, dogColHeight / 2f, dogColEdge);
                             if(playerIndicatorAnim != null)
                                 playerIndicatorAnim.SetBool("isP2", true);
+                            pee.transform.position += Vector3.up * dogPeeOffset;
                         }
                         break;
                     }
@@ -216,6 +221,10 @@ public class PlayerController : MonoBehaviour
                 actionInputBuffer -= Time.fixedDeltaTime;
             if (coyoteTime > 0f)
                 coyoteTime -= Time.fixedDeltaTime;
+
+            // Failsafe thing
+            if (transform.position.y < -100f)
+                gm.RestartLevel();
         }
         else
         {
@@ -432,6 +441,19 @@ public class PlayerController : MonoBehaviour
         if (input.actions["Pause"].triggered)
         {
             gm.TogglePause();
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.tag == "Bush" && col.TryGetComponent<GoldenBush>(out GoldenBush bush))
+        {
+            if (state == PlayerState.PEE)
+                gm.LoadLevel(bush.sceneName);
+        }
+        else if(col.tag == "Death")
+        {
+            gm.RestartLevel();
         }
     }
 }

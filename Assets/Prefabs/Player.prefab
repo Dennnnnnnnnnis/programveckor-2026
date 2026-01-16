@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 4012781913192930857}
   - component: {fileID: 4277954736954324332}
   - component: {fileID: 4471775273012682652}
-  m_Layer: 0
+  - component: {fileID: 9222149966495091533}
+  m_Layer: 6
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -75,6 +76,7 @@ MonoBehaviour:
   dogAnims: {fileID: 9100000, guid: e51e561d5e7b475408432caf92295f48, type: 2}
   dogColHeight: 1.25
   dogColEdge: 0.2
+  dogPeeOffset: 1
   walkSpeed: 7.5
   jumpHeight: 4
   gravity: 75
@@ -144,11 +146,11 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -160,6 +162,33 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!50 &9222149966495091533
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1650426096729392924}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &3343591721505191486
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +200,7 @@ GameObject:
   - component: {fileID: 5380704220714694260}
   - component: {fileID: 2111472813475467719}
   - component: {fileID: 1319612957166270358}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: dog bite mouth_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -285,7 +314,7 @@ GameObject:
   - component: {fileID: 8175039578572107705}
   - component: {fileID: 1388007345999484153}
   - component: {fileID: 210327740933166784}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Square
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,7 +429,7 @@ GameObject:
   - component: {fileID: 3144204086295739564}
   - component: {fileID: 5914266389534918405}
   - component: {fileID: 6703061763650306613}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: PlayerIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -514,7 +543,7 @@ GameObject:
   - component: {fileID: 1247806541742890831}
   - component: {fileID: 7744168313027331451}
   - component: {fileID: 8887742574729995978}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}

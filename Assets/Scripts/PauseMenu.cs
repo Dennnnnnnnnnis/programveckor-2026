@@ -7,9 +7,9 @@ public class PauseMenu : MonoBehaviour
     public GameObject pauseMenu;
     public bool isPaused;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
-        
+        DontDestroyOnLoad(pauseMenu.transform.parent.gameObject);
     }
 
     // Update is called once per frame

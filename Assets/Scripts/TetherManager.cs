@@ -16,6 +16,7 @@ public class TetherManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
     {
+        DontDestroyOnLoad(gameObject);
         line = GetComponent<LineRenderer>();
     }
 
@@ -54,8 +55,6 @@ public class TetherManager : MonoBehaviour
                 }
                 else
                     weightDistribution = 1f;
-
-                print(weightDistribution);
 
                 // Apply the forces and stuff
                 if (col1 != null)
