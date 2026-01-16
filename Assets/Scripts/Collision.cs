@@ -20,6 +20,17 @@ public class Collision : MonoBehaviour
     public float BounceFactor { get { return bounceFactor; } set { bounceFactor = value; } }
     public bool IsGrounded { get { return isGrounded; } set { isGrounded = value; } }
 
+    public float OffsetY { get { return collisionOffset.y; } }
+
+    public void Awake()
+    {
+        if(TryGetComponent<BoxCollider2D>(out BoxCollider2D col))
+        {
+            col.size = collisionSize;
+            col.offset = collisionOffset;
+        }
+    }
+
     public void Collide()
     {
         isGrounded = false;
@@ -111,6 +122,25 @@ public class Collision : MonoBehaviour
         }
 
         return hasHit;
+    }
+
+    public void ChangeHitboxY(float height, float offset, float edge)
+    {
+        // Because in platformer games you tend to want to change the height of the player
+
+        // Very unsafe way to make the collider stick to the ground
+        transform.position -= Vector3.up * (collisionOffset.y - offset);
+
+        // Change the stuff
+        collisionSize.y = height;
+        collisionOffset.y = offset;
+        collisionEdges.y = edge;
+
+        if (TryGetComponent<BoxCollider2D>(out BoxCollider2D col))
+        {
+            col.size = collisionSize;
+            col.offset = collisionOffset;
+        }
     }
 
     void OnDrawGizmosSelected()

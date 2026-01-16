@@ -72,7 +72,10 @@ public class TetherManager : MonoBehaviour
         line.positionCount = connections.Count;
         for(int i = 0; i < connections.Count; i++)
         {
-            line.SetPosition(i, connections[i].transform.position);
+            if (connections[i].TryGetComponent<Collision>(out Collision col))
+                line.SetPosition(i, connections[i].transform.position + Vector3.up * col.OffsetY);
+            else
+                line.SetPosition(i, connections[i].transform.position);
         }
     }
 
