@@ -54,4 +54,17 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void QuitLevel()
+    {
+        Destroy(Camera.main.gameObject);
+        Destroy(FindAnyObjectByType<TetherManager>().gameObject);
+        PlayerController[] players = Object.FindObjectsByType<PlayerController>(FindObjectsSortMode.None);
+        for (int i = 0; i < players.Length; i++)
+            Destroy(players[i].gameObject);
+        Canvas[] can = Object.FindObjectsByType<Canvas>(FindObjectsSortMode.None);
+        for (int i = 0; i < can.Length; i++)
+            Destroy(can[i].gameObject);
+        SceneManager.LoadScene(0);
+    }
 }

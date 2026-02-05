@@ -18,6 +18,12 @@ public class SceneChange: MonoBehaviour
         Time.timeScale = 1f;
     }
 
+    public void Leave()
+    {
+        GameManager.Instance.QuitLevel();
+        Time.timeScale = 1f;
+    }
+
     public void QuitGame()
     {
         Debug.Log("Game is quitting...");
