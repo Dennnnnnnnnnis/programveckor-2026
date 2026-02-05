@@ -1,11 +1,13 @@
 using UnityEngine;
 
-public class TestMovement : MonoBehaviour
+public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+    public float moveSpeed = 5f;
+    public float jumpForce = 7f;
+    public LayerMask groundLayer;
 
-    Rigidbody2D rb;
-    float moveX;
+    private Rigidbody2D rb;
+    private bool isGrounded;
 
     void Start()
     {
@@ -14,13 +16,31 @@ public class TestMovement : MonoBehaviour
 
     void Update()
     {
-        
-        moveX = Input.GetAxisRaw("Horizontal");
+        // Rörelse
+        float moveInput = Input.GetAxisRaw("Horizontal");
+        rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+
+        // Ground check (liten cirkel under spelaren)
+        isGrounded = Physics2D.OverlapCircle(
+            new Vector2(transform.position.x, transform.position.y - 0.6f),
+            0.2f,
+            groundLayer
+        );
+
+        // Hoppa
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+        }
     }
 
-    void FixedUpdate()
+    // Visa ground check i Scene view
+    private void OnDrawGizmosSelected()
     {
-        
-        rb.linearVelocity = new Vector2(moveX * speed, rb.linearVelocity.y);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            new Vector2(transform.position.x, transform.position.y - 0.6f),
+            0.2f
+        );
     }
 }
