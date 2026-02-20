@@ -54,11 +54,16 @@ MonoBehaviour:
   whatIsCollision:
     serializedVersion: 2
     m_Bits: 8
+  whatIsPlatform:
+    serializedVersion: 2
+    m_Bits: 128
   weight: 1
   collisionSize: {x: 0.8, y: 2.5}
   collisionOffset: {x: 0, y: 1.25}
   collisionPrec: {x: 3, y: 3}
   collisionEdges: {x: 0.2, y: 0.4}
+  groundSnapCheck: 0.2
+  platformThreshold: 0.1
 --- !u!114 &4012781913192930857
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,7 +83,8 @@ MonoBehaviour:
   dogColEdge: 0.2
   dogPeeOffset: 1
   walkSpeed: 8
-  jumpHeight: 4
+  walkCycleTime: 0.2
+  jumpHeight: 4.2
   gravity: 75
   jumpGravity: 65
   peakGravity: 40
@@ -267,8 +273,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789953439
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 514897101378407646, guid: d5e2122dc4d03a741be212375df3d7b1, type: 3}
@@ -382,8 +388,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789953439
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -3128140643297055490, guid: ab2b38ef8d7b8e54f9ef2ef7b1c01f54, type: 3}
@@ -496,8 +502,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789953439
+  m_SortingLayer: 3
   m_SortingOrder: 50
   m_MaskInteraction: 0
   m_Sprite: {fileID: 2402667407940649327, guid: dfbd04707e0380946b1734e3244e53a8, type: 3}
@@ -5333,8 +5339,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1789953439
+  m_SortingLayer: 3
   m_SortingOrder: -5
   m_MaskInteraction: 0
   m_RenderMode: 0

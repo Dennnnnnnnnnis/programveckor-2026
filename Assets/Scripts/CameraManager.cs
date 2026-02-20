@@ -63,6 +63,17 @@ public class CameraManager : MonoBehaviour
         }
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            if (state == CameraState.Target)
+                state = CameraState.None;
+            else
+                state = CameraState.Target;
+        }
+    }
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.white;

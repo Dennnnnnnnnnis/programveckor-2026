@@ -14,7 +14,7 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
+  - Platform
   - 
   - 
   - 
@@ -42,6 +42,24 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: BG
+    uniqueID: 2583579281
+    locked: 0
+  - name: Ground
+    uniqueID: 4064004337
+    locked: 0
+  - name: Objects
+    uniqueID: 1789953439
+    locked: 0
+  - name: Effects
+    uniqueID: 3385415101
+    locked: 0
+  - name: FG
+    uniqueID: 2202649955
+    locked: 0
+  - name: UI
+    uniqueID: 4193307485
     locked: 0
   m_RenderingLayers:
   - Default

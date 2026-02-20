@@ -3,7 +3,7 @@ using UnityEngine.UIElements;
 
 public class Parallax : MonoBehaviour
 {
-    private float length, startpos;
+    private Vector2 length, startpos;
     private Transform cam;
     public float parallaxEffect;
 
@@ -11,26 +11,26 @@ public class Parallax : MonoBehaviour
     void Start()
     {
         cam = Camera.main.transform;
-        startpos = transform.position.x;
-        length = GetComponent<SpriteRenderer>().bounds.size.x;
+        startpos = transform.position;
+        length = GetComponent<SpriteRenderer>().bounds.size;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float dist = (cam.position.x * parallaxEffect);
+        Vector2 dist = (cam.position * parallaxEffect);
 
         float temp = cam.position.x * (1 - parallaxEffect);
 
-        if (temp > startpos + length)
+        if (temp > startpos.x + length.x)
         {
-            startpos += length;
+            startpos += length * Vector2.right;
         }
-        else if (temp < startpos - length)
+        else if (temp < startpos.x - length.x)
         {
-            startpos -= length;
+            startpos -= length * Vector2.right;
         }
 
-        transform.position = new Vector3(startpos + dist, transform.position.y, transform.position.z);
+        transform.position = new Vector3(startpos.x + dist.x, startpos.y + dist.y, transform.position.z);
     }
 }

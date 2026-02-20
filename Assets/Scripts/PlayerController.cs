@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Movement")]
     [SerializeField] private float walkSpeed = 4f;
+    [SerializeField] private float walkCycleTime = 0.2f;
     [SerializeField] private float jumpHeight = 4f;
     [Space]
     [SerializeField] private float gravity = 60f;
@@ -53,6 +54,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isJumping = false;
     private float coyoteTime = 0f;
+    private float walkFXCycle = 0f;
 
     [Header("Abilities")]
     [SerializeField] private float dogDashForce = 10f;
@@ -275,6 +277,8 @@ public class PlayerController : MonoBehaviour
             coyoteTime = 0f;
             col.IsGrounded = false;
             isJumping = true;
+
+            GameManager.Instance.PlayVFX("JumpDust", transform.position);
         }
 
         #endregion
@@ -284,7 +288,13 @@ public class PlayerController : MonoBehaviour
             DogDash();
 
         // Do collision
+        bool wasGrounded = col.IsGrounded;
         col.Collide();
+
+        if(col.IsGrounded && !wasGrounded)
+        {
+            GameManager.Instance.PlayVFX("LandDust", transform.position);
+        }
 
         // Weight
         if (Mathf.Abs(moveInput.x) > 0.05f)
@@ -308,7 +318,16 @@ public class PlayerController : MonoBehaviour
         else
         {
             if (Mathf.Abs(moveInput.x) > 0.1f)
+            {
                 anim.Play("Walk", -1);
+
+                walkFXCycle -= Time.deltaTime;
+                if(walkFXCycle <= 0f)
+                {
+                    walkFXCycle += walkCycleTime;
+                    GameManager.Instance.PlayVFX("Dust", transform.position);
+                }
+            }
             else
                 anim.Play("Idle", -1);
         }
@@ -316,7 +335,9 @@ public class PlayerController : MonoBehaviour
 
         // Pee
         if (peeInput && col.IsGrounded)
+        {
             state = PlayerState.PEE;
+        }
     }
 
     void PlayerStateDash()
@@ -408,6 +429,8 @@ public class PlayerController : MonoBehaviour
         isJumping = false;
         abilityTimer = dogDashCooldown;
         col.Velocity = Vector2.up * col.Velocity.y + Vector2.right * dogDashForce * (Mathf.Abs(moveInput.x) > 0.1f ? Mathf.Sign(moveInput.x) : (facingRight ? 1f : -1f));
+
+        GameManager.Instance.PlayVFX("DashDust", transform.position).transform.localScale = new Vector3(-Mathf.Sign(col.Velocity.x), 1f, 1f);
     }
 
     void UpdateInput()
