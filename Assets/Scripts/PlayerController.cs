@@ -294,6 +294,7 @@ public class PlayerController : MonoBehaviour
         if(col.IsGrounded && !wasGrounded)
         {
             GameManager.Instance.PlayVFX("LandDust", transform.position);
+            GameManager.Instance.PlaySFX("Land", transform.position);
         }
 
         // Weight
@@ -326,6 +327,7 @@ public class PlayerController : MonoBehaviour
                 {
                     walkFXCycle += walkCycleTime;
                     GameManager.Instance.PlayVFX("Dust", transform.position);
+                    GameManager.Instance.PlaySFX("Step", transform.position);
                 }
             }
             else

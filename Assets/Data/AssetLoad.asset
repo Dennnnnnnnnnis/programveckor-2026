@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: AssetLoad
   m_EditorClassIdentifier: Assembly-CSharp::AssetLoadObject
   music: []
-  sfx: []
+  sfx:
+  - {fileID: 11400000, guid: ecf408769e5fcfc4b8e444e8f2318e27, type: 2}
+  - {fileID: 11400000, guid: a1916ed61774ffd4899a13dc56b37766, type: 2}
   vfx:
   - {fileID: 11400000, guid: 7100366a6c7f2764ebda908a60d714e2, type: 2}
   - {fileID: 11400000, guid: 5b41ab3f3a03f644b8ad1040a3c2eaea, type: 2}
