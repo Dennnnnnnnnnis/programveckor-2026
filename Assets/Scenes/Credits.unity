@@ -562,7 +562,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d64600938bbae548a84f1d934f7452e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CreditsText
-  scrollSpeed: 30
+  scrollSpeed: 80
   tiltAngle: 20
   startYOffset: -600
 --- !u!114 &1530296144
@@ -585,9 +585,39 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Credits\nProgrammering: Mira, Magnus, Gabriele, Rio, Dennis\nGrafik: Niama,
-    Lukas\nBakgrund: Niama\nHund: Niama\nM\xE4nniska: Lukas\nCo-op system: Dennis\nTile
-    set: Lukas\nFont: dafont, kiwi soda by jeti\nMade in Unity\n\n"
+  m_text: 'Updog
+
+
+    Programmering
+
+    Mira
+
+    Dennis
+
+
+    Grafik
+
+    Niama
+
+    Lukas
+
+
+    Ljud
+    och Musik
+
+    Dennis
+
+
+    Font
+
+    dafont, kiwi soda av jeti
+
+
+    Made in
+    Unity
+
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: c7bcd42807af8044fb3e7f1b45b55a4b, type: 2}
   m_sharedMaterial: {fileID: -1400647615058010500, guid: c7bcd42807af8044fb3e7f1b45b55a4b, type: 2}

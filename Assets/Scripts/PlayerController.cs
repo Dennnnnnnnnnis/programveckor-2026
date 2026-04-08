@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour
     Animator anim;
     ParticleSystem pee;
     SpriteRenderer playerIndicator;
+    AudioSource peeSfx;
 
     public bool isDog = false;
     public PlayerState state = PlayerState.NORMAL;
@@ -62,6 +63,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float dogDashCooldown = 0.5f;
 
     private float abilityTimer = 0f;
+    private bool barkPlayedSound = false;
 
     [Header("Input")]
     private PlayerInput input;
@@ -195,15 +197,43 @@ public class PlayerController : MonoBehaviour
 
             // Pee thing
             if (state == PlayerState.PEE)
+            {
                 pee.Play();
+                if (!peeSfx && GameManager.Instance)
+                {
+                    peeSfx = GameManager.Instance.PlaySFX("Pee", Vector2.zero);
+                    peeSfx.transform.parent = transform;
+                    peeSfx.transform.localPosition = Vector2.zero;
+
+                    GameManager.Instance.PlaySFX("Pee start", transform.position);
+                }
+            }
             else
+            {
                 pee.Stop();
+                if (peeSfx && GameManager.Instance)
+                {
+                    GameManager.Instance.StopSFX(peeSfx);
+                    peeSfx = null;
+                }
+            }
 
             // Bite thing
             if (isDog && action2Input)
+            {
                 dogMouth.Play("DogMouth", -1);
+                if (!barkPlayedSound)
+                {
+                    GameManager.Instance.PlaySFX("Bark", transform.position);
+                    GameManager.Instance.PlaySFX("Chomp", transform.position);
+                    barkPlayedSound = true;
+                }
+            }
             else
+            {
                 dogMouth.Play("DogNo", -1);
+                barkPlayedSound = false;
+            }
 
             // Idle timer
             if (state == PlayerState.NORMAL && Mathf.Abs(moveInput.x) < 0.1f)
@@ -279,6 +309,7 @@ public class PlayerController : MonoBehaviour
             isJumping = true;
 
             GameManager.Instance.PlayVFX("JumpDust", transform.position);
+            GameManager.Instance.PlaySFX("Jump", transform.position);
         }
 
         #endregion
@@ -399,6 +430,9 @@ public class PlayerController : MonoBehaviour
             coyoteTime = 0f;
             col.IsGrounded = false;
             isJumping = true;
+
+            GameManager.Instance.PlayVFX("JumpDust", transform.position);
+            GameManager.Instance.PlaySFX("Jump", transform.position);
         }
 
         #endregion
@@ -433,6 +467,7 @@ public class PlayerController : MonoBehaviour
         col.Velocity = Vector2.up * col.Velocity.y + Vector2.right * dogDashForce * (Mathf.Abs(moveInput.x) > 0.1f ? Mathf.Sign(moveInput.x) : (facingRight ? 1f : -1f));
 
         GameManager.Instance.PlayVFX("DashDust", transform.position).transform.localScale = new Vector3(-Mathf.Sign(col.Velocity.x), 1f, 1f);
+        GameManager.Instance.PlaySFX("Dash", transform.position);
     }
 
     void UpdateInput()
@@ -473,7 +508,11 @@ public class PlayerController : MonoBehaviour
         if (col.tag == "Bush" && col.TryGetComponent<GoldenBush>(out GoldenBush bush))
         {
             if (state == PlayerState.PEE)
+            {
                 gm.LoadLevel(bush.sceneName);
+                if (MusicManager.Instance)
+                    MusicManager.Instance.PlaySong(AssetManager.Instance.musicAssets["Song"], 0, true);
+            }
         }
         else if(col.tag == "Death")
         {

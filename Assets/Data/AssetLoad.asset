@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efdd9c1a90bf3df4eb80d205def359ec, type: 3}
   m_Name: AssetLoad
   m_EditorClassIdentifier: Assembly-CSharp::AssetLoadObject
-  music: []
+  music:
+  - {fileID: 11400000, guid: 524b29eb0f3632a4198fa765ae4d35c9, type: 2}
+  - {fileID: 11400000, guid: dece1452a780c7348be6d33253895c67, type: 2}
   sfx:
   - {fileID: 11400000, guid: ecf408769e5fcfc4b8e444e8f2318e27, type: 2}
   - {fileID: 11400000, guid: a1916ed61774ffd4899a13dc56b37766, type: 2}
+  - {fileID: 11400000, guid: e827afe4ec1d2dc46b927c197ac1fd02, type: 2}
+  - {fileID: 11400000, guid: 48719181ec0b06e47ac1abbd801ab195, type: 2}
+  - {fileID: 11400000, guid: 5ada670e8295ef0419fd3975c88c07dc, type: 2}
+  - {fileID: 11400000, guid: ad3f9c65b43e6fc41b480651f648fa86, type: 2}
+  - {fileID: 11400000, guid: b658851a05a8fc241b633589abc2ce5a, type: 2}
+  - {fileID: 11400000, guid: f862cfe239a35aa40834ab418a7edda0, type: 2}
   vfx:
   - {fileID: 11400000, guid: 7100366a6c7f2764ebda908a60d714e2, type: 2}
   - {fileID: 11400000, guid: 5b41ab3f3a03f644b8ad1040a3c2eaea, type: 2}

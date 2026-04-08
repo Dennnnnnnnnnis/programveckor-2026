@@ -10,13 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c34733a7ecc6044c8299143f7d85a3f, type: 3}
-  m_Name: Step
+  m_Name: Bark
   m_EditorClassIdentifier: Assembly-CSharp::SFXObject
   sfx:
-  - {fileID: 8300000, guid: 2a1502258727b494099989c5bd21d20e, type: 3}
-  minPitch: 0.7
-  maxPitch: 1.3
-  minVolume: 0.3
-  maxVolume: 0.3
+  - {fileID: 8300000, guid: 78141d664ce17fb48a386da95a712e6a, type: 3}
+  - {fileID: 8300000, guid: dbef67e95970d574f998afe45a672b01, type: 3}
+  - {fileID: 8300000, guid: 7dde690449d0996408a3b38f490184df, type: 3}
+  minPitch: 0.8
+  maxPitch: 1.2
+  minVolume: 0.4
+  maxVolume: 0.7
   spatialBlend: 0.5
   loop: 0
